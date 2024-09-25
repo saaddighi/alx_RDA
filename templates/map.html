@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Map</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generated Route</h1>
+    <p>{{ route }}</p>
+
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([{{ coordinates[0][1] if coordinates else 0 }}, {{ coordinates[0][0] if coordinates else 0 }}], 13);
+    
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    
+        {% if coordinates %}
+            var routeCoordinates = [
+                {% for coord in coordinates %}
+                    [{{ coord[0] }}, {{ coord[1] }}],
+                {% endfor %}
+            ];
+    
+            var polyline = L.polyline(routeCoordinates, {color: 'blue'}).addTo(map);
+            map.fitBounds(polyline.getBounds());
+        {% else %}
+            alert('No route coordinates found.');
+        {% endif %}
+    </script>
+    

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Trip Assistant</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        window.onload = getLocation;  // Call getLocation when the page loads
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Welcome to the Road Trip Assistant!</h1>
+        <p class="lead">Get ready for an adventure with a personalized playlist!</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary">Login with Spotify</a>
+
+        <h2 class="mt-5">Generate a Route</h2>
+        <form action="{{ url_for('generate_route') }}" method="POST">
+            <div class="form-group">
+                <label for="time">Travel Time (in minutes):</label>
+                <input type="number" class="form-control" name="time" required>
+            </div>
+            <div class="form-group">
+                <label for="route_type">Route Type:</label>
+                <select class="form-control" name="route_type" required>
+                    <option value="random">Random Destination</option>
+                    <option value="round_trip">Round Trip</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="latitude">Latitude:</label>
+                <input type="text" class="form-control" name="latitude" id="latitude" required readonly>
+            </div>
+            <div class="form-group">
+                <label for="longitude">Longitude:</label>
+                <input type="text" class="form-control" name="longitude" id="longitude" required readonly>
+            </div>
+            <button type="submit" class="btn btn-success">Generate Route</button>
+        </form>
+    </div>
+</body>
+</html>
